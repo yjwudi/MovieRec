@@ -216,12 +216,6 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 
 						<script>
 
-							function GetRandomNum(Min,Max)
-							{
-					            var Range = Max - Min;   
-					            var Rand = Math.random();   
-					            return(Min + Math.round(Rand * Range));   
-							}
 
 							function clickRate(rate) {
 
@@ -239,7 +233,6 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 							movie_poster_container = document.getElementById("movie-poster-container");
 							movie_poster = document.createElement("IMG");
 
-							var num=GetRandomNum(1,100);
 							var pic_src = "../static/styles/images/"+movie_info['num']+".jpg";
 							movie_poster.setAttribute("src", pic_src);
 							movie_poster.setAttribute("width", "260");
@@ -313,7 +306,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 
 				</div>
 				<div class="panel panel-default" id="comment-box">
-						  <div class="panel-heading">User Comments</div>
+						  <!--<div class="panel-heading">User Comments</div>-->
 				</div>
 
 				<script>

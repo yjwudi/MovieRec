@@ -26,6 +26,7 @@ pio_client = predictionio.EventClient(
 disp_process_pref = "===[Process]===: "
 cf = CFModel()
 cf.load_data()
+id_dic = {}
     
 
 #####################################
@@ -103,7 +104,9 @@ def index_():
     for row in cur:
         movie_list.append(row[1])
         rating_list.append(row[2])
+    print("movie_list")
     print(movie_list)
+    print("rating_list")
     print(rating_list)
 
     movie_dict=[]
@@ -281,11 +284,14 @@ def inbox():
 
     movie_id = request.args.get('movie_id')
     user_comment = []
+    print(request.method)
     if request.method == 'POST':
         
         new_comment = request.form.get('user-comment')
+        print(new_comment)
 
-        if new_comment != '':
+        if new_comment != None:
+            print("!!!")
             try:
                 g.conn.execute('INSERT INTO comments (username, movie_id, comments) VALUES (%s, %s, %s)', (session['username'], movie_id, new_comment))
 
@@ -293,7 +299,7 @@ def inbox():
                 pass
 
         else:
-
+            print("???")
             if request.form["btn_cl"] == "1":
                 user_rate = 1
                 send_rating(session['username'], movie_id, user_rate)
@@ -312,11 +318,6 @@ def inbox():
             else:
                 user_rate = 3
                 send_rating(session['username'], movie_id, user_rate)
-
-           
-            
-
-
         
     try:
         cur = g.conn.execute('SELECT comments, username FROM comments WHERE movie_id=%s', (movie_id))
@@ -331,12 +332,18 @@ def inbox():
     cur = g.conn.execute('SELECT * FROM movies WHERE movie_id=%s',movie_id)
     
     movie_dict = get_movie(cur)[0]
-    movie_dict['num'] = random.randint(1, 100)
+    if(movie_dict['movie_id'] in id_dic):
+        movie_dict['num'] = id_dic[movie_dict['movie_id']]
+    else:
+        movie_dict['num'] = random.randint(1, 100)
+        id_dic[movie_dict['movie_id']] = movie_dict['num']
 
     return render_template('movie_page.html', this_username = session['username'], this_movie = movie_dict, this_movie_comment = user_comment)
 
 
 def send_rating(page_user, movie_id, user_rate):
+    print("page_user:")
+    print(page_user)
 
     with g.conn.begin() as _:
         g.conn.execute('DELETE FROM ratings WHERE username = %s AND movie_id = %s', (page_user, movie_id))
